@@ -4,7 +4,7 @@ out
 log.log
 **/node_modules
 *.pyc
-*.vsix
+*.vsix:
 envVars.txt
 **/.vscode/.ropeproject/**
 **/testFiles/**/.cache/**
@@ -21,6 +21,7 @@ cucumber-report.json
 **/.vscode test/**
 **/.vscode-smoke/**
 **/.venv*/
+env/*
 port.txt
 precommit.hook
 python_files/lib/**
