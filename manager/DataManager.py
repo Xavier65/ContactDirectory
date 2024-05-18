@@ -7,42 +7,15 @@ class DataManager:
         self.__cursor = self.__connection.cursor()
 
     def __createTables(self):
-        script:str = 
-                """
-                DROP TABLE IF EXISTS Contact;
-                DROP TABLE IF EXISTS Address;
-                DROP TABLE IF EXISTS CellphoneNumber;
-
-                CREATE TABLE Contact(
-                    id INTEGER NOT NULL,
-                    firstname VARCHAR(32) NOT NULL,
-                    lastname VARCHAR(32),
-                    PRIMARY KEY(id autoincrement)
-                );
-
-                CREATE TABLE Address(
-                    id INTEGER NOT NULL,
-                    contact_id INTEGER NOT NULL,
-                    address VARCHAR(32),
-                    PRIMARY KEY(id autoincrement)
-                );
-
-                CREATE TABLE CellphoneNumber(
-                    id INTEGER NOT NULL,
-                        contact_id INTEGER NOT NULL,
-                    cellphone_number VARCHAR(32) NOT NULL,
-                    PRIMARY KEY(id autoincrement)
-                );
-            """
         try:
             cursor = self.__connection.cursor()
-            cursor.executescript(
+            with open("./manager/script.sql", "r") as script:
+                cursor.executescript(script.read())
             self.__connection.commit()
             cursor.close()
         except Exception as e:
             cursor.close()
             print(f"Error: {e}")
-
 
     def validate(self):
         try:
@@ -70,4 +43,3 @@ class DataManager:
     def getAddresses(self) -> list:
         self.__addresses = self.__cursor.execute("SELECT * FROM Address;")
         return self.__addresses.fetchall()
-
