@@ -1,6 +1,15 @@
-class Contact:
+class NewContact:
+    def __init__(self, first_name: str, lastname: str) -> None:
+        self.__firstname: str = first_name
+        self.__lastname: str = lastname
+
+    def getInformation(self) -> tuple:
+        return (self.__firstname, self.__lastname)
+
+
+class Contact(NewContact):
     def __init__(self, id: int, first_name: str, lastname: str) -> None:
-        self.__id = id
+        self.__id: int = id
         self.__firstname: str = first_name
         self.__lastname: str = lastname
         self.__cellphone_numbers: list = []
