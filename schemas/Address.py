@@ -1,3 +1,12 @@
+class NewAddress:
+    def __init__(self, contact_id: int, address: str) -> None:
+        self.__contact_id: int = contact_id
+        self.__address: str = address
+
+    def getInformation(self) -> tuple:
+        return (self.__contact_id, self.__address)
+
+
 class Address:
     def __init__(self, id: int, contact_id: int, address: str) -> None:
         self.__id: int = id

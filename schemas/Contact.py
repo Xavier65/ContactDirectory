@@ -41,3 +41,12 @@ class Contact(NewContact):
 
     def setAddress(self, address: list) -> None:
         self.__address = address
+
+    def show(self):
+        return (
+            self.__id,
+            self.__firstname,
+            self.__lastname,
+            self.__cellphone_numbers,
+            self.__address,
+        )

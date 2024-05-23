@@ -1,3 +1,12 @@
+class NewCellphoneNumber:
+    def __init__(self, contact_id: int, cellphone_number: str) -> None:
+        self.__contact_id: int = contact_id
+        self.__cellphone_number: str = cellphone_number
+
+    def getInformation(self) -> tuple:
+        return (self.__contact_id, self.__cellphone_number)
+
+
 class CellphoneNumber:
     def __init__(self, id: int, contact_id: int, cellphone_number: str) -> None:
         self.__id: int = id

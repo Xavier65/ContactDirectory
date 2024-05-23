@@ -1,24 +1,21 @@
 import sqlite3
 
 from schemas.Contact import Contact, NewContact
-from schemas.CellphoneNumber import CellphoneNumber
-from schemas.Address import Address
+from schemas.CellphoneNumber import CellphoneNumber, NewCellphoneNumber
+from schemas.Address import Address, NewAddress
 
 
 class DataManager:
     def __init__(self, database: str) -> None:
         self.__dbname: str = database
 
-    def __getRows(self, sql_query_sentences: str) -> sqlite3.Cursor | None:
+    def __getRows(self, sql_query_sentences: str) -> sqlite3.Cursor | list:
         try:
             conn = sqlite3.connect(self.__dbname)
             cursor = conn.cursor()
-            result = cursor.execute(sql_query_sentences)
-            cursor.close()
-            conn.close()
-            return result
-        except:
-            return []
+            return cursor.execute(sql_query_sentences)
+        except Exception as e:
+            print(f"Error:{e} -> getRows")
 
     def createTables(self) -> None:
         result: list = []
@@ -33,19 +30,27 @@ class DataManager:
             ).fetchall()
             cursor.close()
             conn.close()
-            print(result)
         except Exception as e:
             print(f"Error:{e} al intentar crear las tablas.")
+
+    def __getContact(self, contact_id: int):
+        try:
+            conn = sqlite3.connect(self.__dbname)
+            cursor = conn.cursor()
+            result = cursor.execute(f"SELECT * FROM Contact WHERE id = {contact_id}")
+            return result.fetchone()
+        except Exception as e:
+            print(e)
 
     def __getCellphoneNumber(self, contact_id: int) -> list:
         numbers: list = []
         try:
             rows = self.__getRows(
-                f"FROM * FROM CellphoneNumber WHERE contact_id = {contact_id}"
+                f"SELECT * FROM CellphoneNumber WHERE contact_id = {contact_id}"
             )
             for row in rows.fetchall():
                 row_number = CellphoneNumber(row[0], row[1], row[2])
-                numbers.append(row_number)
+                numbers.append(row_number.getCellphoneNumber())
             return numbers
         except:
             return []
@@ -54,16 +59,17 @@ class DataManager:
         addresses: list = []
         try:
             rows = self.__getRows(
-                f"FROM * FROM Address WHERE contact_id ={contact_id} "
+                f"SELECT * FROM Address WHERE contact_id ={contact_id} "
             )
             for row in rows.fetchall():
                 row_address = Address(row[0], row[1], row[2])
-                addresses.append(row_address)
+                addresses.append(row_address.getAddress())
             return addresses
-        except:
+        except Exception as e:
+            print(e)
             return []
 
-    def getContacts(self) -> list:
+    def getAllContacts(self) -> list:
         contacts: list = []
         try:
             rows = self.__getRows("SELECT * FROM Contact")
@@ -71,32 +77,36 @@ class DataManager:
                 row_contact = Contact(row[0], row[1], row[2])
                 row_contact.setAddress(self.__getAddress(row[0]))
                 row_contact.setCellphoneNumbers(self.__getCellphoneNumber(row[0]))
-                contacts.append(row_contact)
+                contacts.append(row_contact.show())
             return contacts
         except:
             return []
 
-    def getContactNumber(self, contact_name: str) -> list:
+    def getContactNumber(self, cellphoneNumber: str):
         try:
             register = self.__getRows(
-                f"SELECT * FROM Contact WHERE firtname like '%{contact_name}%'"
+                f"SELECT * FROM CellphoneNumber WHERE cellphone_number like '%{cellphoneNumber}%'"
             )
             row = register.fetchone()
-            result_contact = Contact(row[0], row[1], row[2])
-            result_contact.setCellphoneNumbers(self.__getCellphoneNumber(row[0]))
-            return list(result_contact)
-        except:
-            return []
+            result = self.__getContact(row[1])
+            contact = Contact(result[0], result[1], result[2])
+            contact.setCellphoneNumbers(self.__getCellphoneNumber(row[1]))
+            contact.setAddress(self.__getAddress(row[1]))
+            return contact.show()
+        except Exception as e:
+            print(f"Error:{e} -> getContactNumber")
 
-    def getContactAddress(self, contact_name: str) -> list:
+    def getContactAddress(self, address: str) -> list:
         try:
             register = self.__getRows(
-                f"SELECT * FROM Contact WHERE firtname like '%{contact_name}%'"
+                f"SELECT * FROM Address WHERE address like '%{address}%'"
             )
             row = register.fetchone()
-            result_contact = Contact(row[0], row[1], row[2])
-            result_contact.setAddress(self.__getAddress(row[0]))
-            return list(result_contact)
+            result = self.__getContact(row[1])
+            contact = Contact(result[0], result[1], result[2])
+            contact.setCellphoneNumbers(self.__getCellphoneNumber(row[1]))
+            contact.setAddress(self.__getAddress(row[1]))
+            return contact.show()
         except:
             return []
 
@@ -107,6 +117,32 @@ class DataManager:
             cursor.execute(
                 "INSERT INTO Contact (firstname,lastname) VALUES (?,?)",
                 contact.getInformation(),
+            )
+            conn.commit()
+            cursor.close()
+        except Exception as e:
+            print(e)
+
+    def addNewAddress(self, address: NewAddress) -> None:
+        try:
+            conn = sqlite3.connect(self.__dbname)
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO Address (contact_id, address) VALUES (?,?)",
+                address.getInformation(),
+            )
+            conn.commit()
+            cursor.close()
+        except Exception as e:
+            print(e)
+
+    def addNewCellphoneNumber(self, cellphoneNumber: NewCellphoneNumber) -> None:
+        try:
+            conn = sqlite3.connect(self.__dbname)
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO CellphoneNumber (contact_id, cellphone_number) VALUES (?,?)",
+                cellphoneNumber.getInformation(),
             )
             conn.commit()
             cursor.close()
