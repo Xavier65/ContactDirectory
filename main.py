@@ -9,29 +9,27 @@ from schemas.CellphoneNumber import NewCellphoneNumber
 load_dotenv()
 DATABASE = os.getenv("DATABASE")
 md = DataManager(DATABASE)
-md.createTables()
+# md.createTables()
 
-newContact1 = NewContact("firstname", "firstlast")
-newAddress1 = NewAddress(1, "Wall Street 21th")
-newCellphoneNumber1 = NewCellphoneNumber(1, "+504 3389 9873")
-newContact2 = NewContact("secondname", "secondlast")
-newAddress2 = NewAddress(2, "Main Street 19th")
-newCellphoneNumber2 = NewCellphoneNumber(2, "+502 8123 8234")
-newContact3 = NewContact("threethname", "threethlast")
-newAddress3 = NewAddress(3, "Jornell Street 2th")
-newCellphoneNumber3 = NewCellphoneNumber(3, "+501 9234 8923")
+contact = [
+    NewContact({"firstname": "Juan", "lastname": "Perez"}),
+    NewContact({"firstname": "Benito", "lastname": "Paredez"}),
+    NewContact({"firstname": "Marcos", "lastname": "Marquez"}),
+]
+address = [
+    NewAddress({"contact_id": 1, "address": "Wall Street 21th"}),
+    NewAddress({"contact_id": 2, "address": "Main Street 19th"}),
+    NewAddress({"contact_id": 3, "address": "Jornell Street 2th"}),
+]
+numbers = [
+    NewCellphoneNumber({"contact_id": 1, "cellphone_number": "+504 3389 9873"}),
+    NewCellphoneNumber({"contact_id": 2, "cellphone_number": "+502 8123 8234"}),
+    NewCellphoneNumber({"contact_id": 3, "cellphone_number": "+501 9234 8923"}),
+]
 
-md.addNewContact(newContact1)
-md.addNewAddress(newAddress1)
-md.addNewCellphoneNumber(newCellphoneNumber1)
+# for item in range(3):
+#    md.addNewContact(contact[item], address[item], numbers[item])
 
-md.addNewContact(newContact2)
-md.addNewAddress(newAddress2)
-md.addNewCellphoneNumber(newCellphoneNumber2)
-
-md.addNewContact(newContact3)
-md.addNewAddress(newAddress3)
-md.addNewCellphoneNumber(newCellphoneNumber3)
-
-
-print(md.getAllContacts())
+# print(f"Result All Contactos: {md.getAllContacts()}")
+# print(f"Result Contact Number: {md.getContactNumber("33")}")
+# print(f"Result Contact Address: {md.getContactAddress("21th")}")

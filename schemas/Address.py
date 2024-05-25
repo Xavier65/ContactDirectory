@@ -1,17 +1,17 @@
 class NewAddress:
-    def __init__(self, contact_id: int, address: str) -> None:
-        self.__contact_id: int = contact_id
-        self.__address: str = address
+    def __init__(self, address: dict) -> None:
+        self.__contact_id: int = address["contact_id"]
+        self.__address: str = address["address"]
 
     def getInformation(self) -> tuple:
         return (self.__contact_id, self.__address)
 
 
 class Address:
-    def __init__(self, id: int, contact_id: int, address: str) -> None:
-        self.__id: int = id
-        self.__contact_id: int = contact_id
-        self.__address: str = address
+    def __init__(self, address: dict) -> None:
+        self.__id: int = address["id"]
+        self.__contact_id: int = address["contact_id"]
+        self.__address: str = address["address"]
 
     def getId(self) -> int:
         return self.__id
